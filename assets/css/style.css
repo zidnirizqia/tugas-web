@@ -178,3 +178,109 @@ table.table-bordered.dataTable th {
   background-color: #00aa9d;
   border-color: #00aa9d;
 }
+
+/* Tambahkan properti transisi global */
+* {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Animasi untuk card */
+.card {
+  border-radius: 1rem;
+  transform: translateY(0);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Animasi untuk button */
+.btn-success {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 170, 157, 0.3);
+}
+
+.btn-success:active {
+  transform: translateY(0);
+}
+
+/* Animasi untuk feature icons */
+.feature-icon-1,
+.feature-icon-2,
+.feature-icon-3 {
+  transition: all 0.3s ease;
+}
+
+.feature-icon-1:hover,
+.feature-icon-2:hover,
+.feature-icon-3:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 170, 157, 0.3);
+}
+
+/* Animasi untuk table rows */
+.table tr {
+  transition: background-color 0.3s ease;
+}
+
+.table tr:hover {
+  background-color: rgba(0, 170, 157, 0.05) !important;
+}
+
+/* Animasi untuk pagination */
+.page-link {
+  transition: all 0.3s ease;
+}
+
+.page-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tambahkan animasi loading */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Terapkan animasi fadeIn ke elemen yang baru dimuat */
+.card,
+.feature-icon-1,
+.feature-icon-2,
+.feature-icon-3,
+.table {
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Tambahkan efek ripple untuk button */
+.btn-success::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-success:active::after {
+  width: 200%;
+  height: 200%;
+}

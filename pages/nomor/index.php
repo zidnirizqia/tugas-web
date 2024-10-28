@@ -73,15 +73,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer mt-auto py-4">
-        <div class="container">
-            <!-- copyright -->
-            <div class="copyright text-center mb-2 mb-md-0">
-                &copy; 2021 - <a href="https://pustakakoding.com/" target="_blank" class="text-brand text-decoration-none">Pustaka Koding</a>. All rights reserved.
-            </div>
-        </div>
-    </footer>
 
     <!-- jQuery Core -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -90,26 +81,43 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
-        $(document).ready(function() {
-            // tampilkan jumlah antrian
-            $('#antrian').load('get_antrian.php');
+    $(document).ready(function() {
+        // tampilkan jumlah antrian
+        $('#antrian').load('get_antrian.php');
 
-            // proses insert data
-            $('#insert').on('click', function() {
-                $.ajax({
-                    type: 'POST',                       // mengirim data dengan method POST
-                    url: 'insert.php',                  // url file proses insert data
-                    success: function(result) {         // ketika proses insert data selesai
-                        // jika berhasil
-                        if (result === 'Sukses') {
-                            // tampilkan jumlah antrian
-                            $('#antrian').load('get_antrian.php').fadeIn('slow');
-                        }
-                    },
-                });
+        // proses insert data
+        $('#insert').on('click', function() {
+            $.ajax({
+                type: 'POST',                       // mengirim data dengan method POST
+                url: 'insert.php',                  // url file proses insert data
+                success: function(result) {         // ketika proses insert data selesai
+                    // jika berhasil
+                    if (result === 'Sukses') {
+                        // tampilkan jumlah antrian
+                        $('#antrian').load('get_antrian.php').fadeIn('slow');
+                    }
+                },
             });
         });
+
+        // proses reset data
+        $('#reset').on('click', function() {
+            $.ajax({
+                type: 'POST',
+                url: 'reset.php',                  // url file proses reset data
+                success: function(result) {        // ketika proses reset data selesai
+                    if (result === 'Sukses') {
+                        // tampilkan jumlah antrian yang telah di-reset
+                        $('#antrian').load('get_antrian.php').fadeIn('slow');
+                    }
+                },
+            });
+        });
+    });
+
     </script>
+
+    
 </body>
 
 </html>
