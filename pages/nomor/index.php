@@ -62,6 +62,10 @@
                             <a id="insert" href="javascript:void(0)" class="btn btn-success btn-block rounded-pill fs-5 px-5 py-4 mb-2">
                                 <i class="bi-person-plus fs-4 me-2"></i> Ambil Nomor
                             </a>
+                            <!-- button reset nomor antrian -->
+                            <a id="reset" href="javascript:void(0)" class="btn btn-danger btn-block rounded-pill fs-5 px-5 py-4">
+                                <i class="bi-arrow-clockwise fs-4 me-2"></i> Reset Nomor
+                            </a>
                         </div>
                     </div>
                 </div>
