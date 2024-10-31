@@ -89,12 +89,45 @@
                                 </div>
                                 <div>
                                     <p id="antrian-sekarang" class="fs-3 text-success mb-1"></p>
-                                    <p class="mb-0">Antrian Sekarang</p>
+                                    <p class="mb-0">Antrian Loket 1</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-start">
+                                <div class="feature-icon-3 me-4">
+                                    <i class="bi-person-check text-success"></i>
+                                </div>
+                                <div>
+                                    <p id="antrian-sekarang2" class="fs-3 text-success mb-1"></p>
+                                    <p class="mb-0">Antrian Loket 2</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-start">
+                                <div class="feature-icon-3 me-4">
+                                    <i class="bi-person-check text-success"></i>
+                                </div>
+                                <div>
+                                    <p id="antrian-sekarang3" class="fs-3 text-success mb-1"></p>
+                                    <p class="mb-0">Antrian Loket 3</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- menampilkan informasi nomor antrian yang akan dipanggil selanjutnya -->
                 <div class="col-md-3 mb-4">
                     <div class="card border-0 shadow-sm">
@@ -137,7 +170,9 @@
                                 <tr>
                                     <th>Nomor Antrian</th>
                                     <th>Status</th>
-                                    <th>Panggil</th>
+                                    <th>Loket 1</th>
+                                    <th>Loket 2</th>
+                                    <th>Loket 3</th>
                                 </tr>
                             </thead>
                         </table>
@@ -175,17 +210,20 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
+            // Fungsi untuk mengambil
             // tampilkan informasi antrian
             $('#jumlah-antrian').load('get_jumlah_antrian.php');
             $('#antrian-sekarang').load('get_antrian_sekarang.php');
+            $('#antrian-sekarang2').load('get_antrian_sekarang2.php');
+            $('#antrian-sekarang3').load('get_antrian_sekarang3.php');
             $('#antrian-selanjutnya').load('get_antrian_selanjutnya.php');
             $('#sisa-antrian').load('get_sisa_antrian.php');
 
             // menampilkan data antrian menggunakan DataTables
             var table = $('#tabel-antrian').DataTable({
-                "lengthChange": false,                  // non-aktifkan fitur "lengthChange"
-                "searching": false,                     // non-aktifkan fitur "Search"
-                "ajax": "get_antrian.php",              // url file proses tampil data dari database
+                "lengthChange": false, // non-aktifkan fitur "lengthChange"
+                "searching": false, // non-aktifkan fitur "Search"
+                "ajax": "get_antrian.php", // url file proses tampil data dari database
                 // menampilkan data
                 "columns": [{
                         "data": "no_antrian",
@@ -202,34 +240,165 @@
                         "searchable": false,
                         "width": '100px',
                         "className": 'text-center',
-                        "render": function(data, type, row) {
-                            // jika tidak ada data "status"
+                        "render": function(data, type, row, meta) {
+                            var btn;
+
+                            // Jika tidak ada data "status"
                             if (data["status"] === "") {
-                                // sembunyikan button panggil
-                                var btn = "-";
+                                btn = "-";
                             }
-                            // jika data "status = 0"
+                            // Jika status = 0, tampilkan button panggil hijau
                             else if (data["status"] === "0") {
-                                // tampilkan button panggil
-                                var btn = "<button class=\"btn btn-success btn-sm rounded-circle\"><i class=\"bi-mic-fill\"></i></button>";
+                                btn = "<button class=\"btn btn-success btn-sm rounded-circle btn_mic\"><i class=\"bi-mic-fill\"></i></button>";
                             }
-                            // jika data "status = 1"
+                            // Jika status = 1 dan kolom ini adalah loket yang diklik, tampilkan ceklis dan silang
+                            else if (data["status"] === "1" && meta.col === selectedLoket + 1) {
+                                btn = "<div class='button-group d-flex justify-content-center align-items-center'>" + // Menggunakan d-flex dan justify-content-center
+                                    "<button class=\"btn btn-warning btn-sm rounded-circle btn_mic\"><i class=\"bi-mic-fill\"></i></button>" +
+                                    "<button class=\"btn btn-success btn-sm rounded-circle mx-1 confirm-check\" title=\"Confirm\"><i class=\"bi-check-circle-fill\"></i></button>" +
+                                    "<button class=\"btn btn-danger btn-sm rounded-circle cancel-check\" title=\"Cancel\"><i class=\"bi-x-circle-fill\"></i></button>" +
+                                    "</div>";
+
+
+                            }
+                            // Jika status = 2, tampilkan button ceklis hijau
+                            else if (data["status"] === "2") {
+                                btn = "<button class=\"btn btn-secondary btn-sm rounded-circle\"><i class=\"bi-mic-fill\"></i></button>";
+                            }
+                            // Jika status = 1 tapi kolom ini bukan loket yang diklik, tampilkan mikrofon kuning saja
                             else if (data["status"] === "1") {
-                                // tampilkan button ulangi panggilan
-                                var btn = "<button class=\"btn btn-secondary btn-sm rounded-circle\"><i class=\"bi-mic-fill\"></i></button>";
-                            };
+                                btn = "<button class=\"btn btn-warning btn-sm rounded-circle\"><i class=\"bi-mic-fill\"></i></button>";
+                            }
+
+                            return btn;
+                        }
+                    },
+                    {
+                        "data": null,
+                        "orderable": false,
+                        "searchable": false,
+                        "width": '100px',
+                        "className": 'text-center',
+                        "render": function(data, type, row, meta) {
+                            var btn;
+
+                            // Jika tidak ada data "status"
+                            if (data["status"] === "") {
+                                btn = "-";
+                            }
+                            // Jika status = 0, tampilkan button panggil hijau
+                            else if (data["status"] === "0") {
+                                btn = "<button class=\"btn btn-success btn-sm rounded-circle btn_mic\"><i class=\"bi-mic-fill\"></i></button>";
+                            }
+                            // Jika status = 1 dan kolom ini adalah loket yang diklik, tampilkan ceklis dan silang
+                            else if (data["status"] === "1" && meta.col === selectedLoket + 1) {
+                                btn = "<div class='button-group d-flex justify-content-center align-items-center'>" + // Menggunakan d-flex dan justify-content-center
+                                    "<button class=\"btn btn-warning btn-sm rounded-circle btn_mic\"><i class=\"bi-mic-fill\"></i></button>" +
+                                    "<button class=\"btn btn-success btn-sm rounded-circle mx-1 confirm-check\" title=\"Confirm\"><i class=\"bi-check-circle-fill\"></i></button>" +
+                                    "<button class=\"btn btn-danger btn-sm rounded-circle cancel-check\" title=\"Cancel\"><i class=\"bi-x-circle-fill\"></i></button>" +
+                                    "</div>";
+
+
+                            }
+                            // Jika status = 2, tampilkan button ceklis hijau
+                            else if (data["status"] === "2") {
+                                btn = "<button class=\"btn btn-secondary btn-sm rounded-circle\"><i class=\"bi-mic-fill\"></i></button>";
+                            }
+                            // Jika status = 1 tapi kolom ini bukan loket yang diklik, tampilkan mikrofon kuning saja
+                            else if (data["status"] === "1") {
+                                btn = "<button class=\"btn btn-warning btn-sm rounded-circle\"><i class=\"bi-mic-fill\"></i></button>";
+                            }
+
+                            return btn;
+                        }
+                    },
+                    {
+                        "data": null,
+                        "orderable": false,
+                        "searchable": false,
+                        "width": '100px',
+                        "className": 'text-center',
+                        "render": function(data, type, row, meta) {
+                            var btn;
+
+                            // Jika tidak ada data "status"
+                            if (data["status"] === "") {
+                                btn = "-";
+                            }
+                            // Jika status = 0, tampilkan button panggil hijau
+                            else if (data["status"] === "0") {
+                                btn = "<button class=\"btn btn-success btn-sm rounded-circle btn_mic\"><i class=\"bi-mic-fill\"></i></button>";
+                            }
+                            // Jika status = 1 dan kolom ini adalah loket yang diklik, tampilkan ceklis dan silang
+                            else if (data["status"] === "1" && meta.col === selectedLoket + 1) {
+                                btn = "<div class='button-group d-flex justify-content-center align-items-center'>" + // Menggunakan d-flex dan justify-content-center
+                                    "<button class=\"btn btn-warning btn-sm rounded-circle btn_mic\"><i class=\"bi-mic-fill\"></i></button>" +
+                                    "<button class=\"btn btn-success btn-sm rounded-circle mx-1 confirm-check\" title=\"Confirm\"><i class=\"bi-check-circle-fill\"></i></button>" +
+                                    "<button class=\"btn btn-danger btn-sm rounded-circle cancel-check\" title=\"Cancel\"><i class=\"bi-x-circle-fill\"></i></button>" +
+                                    "</div>";
+
+
+                            }
+                            // Jika status = 2, tampilkan button ceklis hijau
+                            else if (data["status"] === "2") {
+                                btn = "<button class=\"btn btn-secondary btn-sm rounded-circle\"><i class=\"bi-mic-fill\"></i></button>";
+                            }
+                            // Jika status = 1 tapi kolom ini bukan loket yang diklik, tampilkan mikrofon kuning saja
+                            else if (data["status"] === "1") {
+                                btn = "<button class=\"btn btn-warning btn-sm rounded-circle\"><i class=\"bi-mic-fill\"></i></button>";
+                            }
+
                             return btn;
                         }
                     },
                 ],
                 "order": [
-                    [0, "desc"]             // urutkan data berdasarkan "no_antrian" secara descending
+                    [0, "desc"] // urutkan data berdasarkan "no_antrian" secara descending
                 ],
-                "iDisplayLength": 10,       // tampilkan 10 data per halaman
+                "iDisplayLength": 10, // tampilkan 10 data per halaman
             });
 
+            var selectedLoket;
+            $('#tabel-antrian tbody').on('click', '.confirm-check', function() {
+                var data = table.row($(this).parents('tr')).data();
+                var id = data["id"];
+                $.ajax({
+                    type: "POST",
+                    url: "update_konfirmasi.php",
+                    data: {
+                        id: id,
+                        status: "2",
+                        selectedLoket: selectedLoket // Mengirimkan selectedLoket ke server
+                    },
+                    success: function() {
+                        table.ajax.reload(null, false); // Reload tabel tanpa reset pagination
+                    }
+                });
+            });
+
+
+            $('#tabel-antrian tbody').on('click', '.cancel-check', function() {
+                var data = table.row($(this).parents('tr')).data();
+                var id = data["id"];
+
+                $.ajax({
+                    type: "POST",
+                    url: "update_konfirmasi.php",
+                    data: {
+                        id: id,
+                        status: "0" // Update status menjadi 0 untuk mengulang panggilan
+                    },
+                    success: function() {
+                        table.ajax.reload(null, false); // Reload tabel tanpa reset pagination
+                    }
+                });
+            });
+
+
             // panggilan antrian dan update data
-            $('#tabel-antrian tbody').on('click', 'button', function() {
+            // panggilan antrian dan update data
+
+            $('#tabel-antrian tbody').on('click', '.btn_mic', function() {
                 // ambil data dari datatables 
                 var data = table.row($(this).parents('tr')).data();
                 // buat variabel untuk menampilkan data "id"
@@ -245,30 +414,52 @@
                 // set delay antara suara bell dengan suara nomor antrian
                 durasi_bell = bell.duration * 770;
 
-                // mainkan suara nomor antrian
+                // deteksi loket yang diklik
+                var loket = $(this).closest('td').index();
+                selectedLoket = $(this).closest('td').index(); // Mendapatkan indeks kolom (loket)
+
+                // mainkan suara nomor antrian sesuai loket
                 setTimeout(function() {
-                    responsiveVoice.speak("Nomor Antrian, " + data["no_antrian"] + ", menuju, loket, 1", "Indonesian Male", {
-                        rate: 0.9,
-                        pitch: 1,
-                        volume: 1
-                    });
+                    if (selectedLoket === 1) { // Loket 1
+                        responsiveVoice.speak("Nomor Antrian, " + data["no_antrian"] + ", menuju, loket, 1", "Indonesian Male", {
+                            rate: 0.9,
+                            pitch: 1,
+                            volume: 1
+                        });
+                    } else if (selectedLoket === 2) { // Loket 2
+                        responsiveVoice.speak("Nomor Antrian, " + data["no_antrian"] + ", menuju, loket, 2", "Indonesian Male", {
+                            rate: 0.9,
+                            pitch: 1,
+                            volume: 1
+                        });
+                    } else if (selectedLoket === 3) { // Loket 3
+                        responsiveVoice.speak("Nomor Antrian, " + data["no_antrian"] + ", menuju, loket, 3", "Indonesian Male", {
+                            rate: 0.9,
+                            pitch: 1,
+                            volume: 1
+                        });
+                    }
                 }, durasi_bell);
 
                 // proses update data
                 $.ajax({
-                    type: "POST",           // mengirim data dengan method POST
-                    url: "update.php",      // url file proses update data
+                    type: "POST", // mengirim data dengan method POST
+                    url: "update.php", // url file proses update data
                     // tentukan data yang dikirim
                     data: {
-                        id: id
+                        id: id,
+                        // loket: loket
                     }
                 });
+
+                // updateActionButtons(loket - 1);
             });
 
-            // auto reload data antrian setiap 1 detik untuk menampilkan data secara realtime
             setInterval(function() {
                 $('#jumlah-antrian').load('get_jumlah_antrian.php').fadeIn("slow");
                 $('#antrian-sekarang').load('get_antrian_sekarang.php').fadeIn("slow");
+                $('#antrian-sekarang2').load('get_antrian_sekarang2.php').fadeIn("slow");
+                $('#antrian-sekarang3').load('get_antrian_sekarang3.php').fadeIn("slow");
                 $('#antrian-selanjutnya').load('get_antrian_selanjutnya.php').fadeIn("slow");
                 $('#sisa-antrian').load('get_sisa_antrian.php').fadeIn("slow");
                 table.ajax.reload(null, false);

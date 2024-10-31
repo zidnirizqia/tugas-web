@@ -9,17 +9,24 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH
     if (isset($_POST['id'])) {
         // ambil data hasil post dari ajax
         $id = mysqli_real_escape_string($mysqli, $_POST['id']);
-        // $loket = mysqli_real_escape_string($mysqli, $_POST['loket']);
-        // tentukan nilai status
-        $status = "1";
+        $status = mysqli_real_escape_string($mysqli, $_POST['status']);
+        $selectedLoket = mysqli_real_escape_string($mysqli, $_POST['selectedLoket']); // Ambil selectedLoket
         // ambil tanggal dan waktu update data
         $updated_date = gmdate("Y-m-d H:i:s", time() + 60 * 60 * 7);
 
-        // sql statement untuk update data di tabel "tbl_antrian" berdasarkan "id"
-        $update = mysqli_query($mysqli, "UPDATE tbl_antrian
-                                        SET status='$status', updated_date='$updated_date'
-                                        -- , loket = '$loket'
-                                        WHERE id='$id'")
+        // Menyusun query SQL
+        $update_query = "UPDATE tbl_antrian SET status='$status', updated_date='$updated_date'";
+
+        // Jika status adalah 2, update kolom loket
+        if ($status == "2") {
+            $update_query .= ", loket='$selectedLoket'";
+        }
+
+        // Tambahkan kondisi WHERE
+        $update_query .= " WHERE id='$id'";
+
+        // Eksekusi query
+        $update = mysqli_query($mysqli, $update_query)
             or die('Ada kesalahan pada query update : ' . mysqli_error($mysqli));
     }
 }
